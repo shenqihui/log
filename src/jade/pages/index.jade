@@ -1,0 +1,21 @@
+{% load i18n static %}
+doctype
+html
+  head
+    meta(charset="UTF-8")
+    title Hello world.
+    include ../partial/head
+    link(rel="shortcut icon" href= makeHash("/images/favicon.ico"))
+    link(rel="stylesheet" href= makeHash("/bootstrap/dist/css/bootstrap.min.css"))
+    link(rel="stylesheet" href= makeHash("/css/index.css"))
+  body
+    include ../partial/header
+    .container
+      h1 Hello world2.
+      h2 Hello world3.4
+
+    include ../partial/footer
+
+    script(src= makeHash("/js/lib.js"))
+      script(src= makeHash("/js/index.js"))
+

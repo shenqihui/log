@@ -1,0 +1,27 @@
+{
+  "name": "report",
+  "version": "0.1.0",
+  "authors": [
+    "shenqi <shenqihui0920@gmail.com>"
+  ],
+  "description": "report",
+  "main": "manage.py",
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "homepage": "http://www.report.org/",
+  "private": true,
+  "ignore": [
+    "node_modules",
+    "bower",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.2",
+    "font-awesome": "~4.2.0",
+    "components-bootstrap": "~3.3.2",
+    "artTemplate": "aui/artTemplate#~3.0.1"
+  }
+}
