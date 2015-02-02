@@ -94,7 +94,7 @@ STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'static'),
-    os.path.join(PROJECT_DIR, 'bower_components'),
+    # os.path.join(PROJECT_DIR, 'bower_components'),
 )
 
 TEMPLATE_DIRS = (
