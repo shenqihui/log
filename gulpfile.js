@@ -72,6 +72,9 @@ var getConfig = function(productionOrDevelop) {
   var staticRoot = '/static';
   
   return {
+    bower: {
+      dist: bowerPath
+    },
     browserSync: {
       port: 3000
     },
@@ -201,27 +204,28 @@ var getConfig = function(productionOrDevelop) {
 var config = getConfig(false);
 
 // gulp plugin
-var browserSync        = require('browser-sync');
-var gulp               = require('gulp');
-var gulpChanged        = require('gulp-changed');
-var gulpClean          = require('gulp-clean');
-var gulpConcat         = require('gulp-concat');
-var gulpConcatCss = require('gulp-concat-css');
-// var gulpFilesize       = require('gulp-filesize');
-var gulpFlatten        = require('gulp-flatten');
-var gulpFooter         = require('gulp-footer');
-// var gulpIf             = require('gulp-if');
-var gulpHeader         = require('gulp-header');
-// var gulpIgnore         = require('gulp-ignore');
-var gulpImagemin       = require('gulp-imagemin');
-var gulpJshint         = require('gulp-jshint');
-var gulpJade           = require('gulp-jade');
-var gulpLess           = require('gulp-less');
-// var gulpMinifyCSS      = require('gulp-minify-css');
-var gulpNotify         = require('gulp-notify');
-// var gulpRevAll         = require('gulp-rev-all');
-var gulpSourcemaps     = require('gulp-sourcemaps');
-// var gulpUglify         = require('gulp-uglify');
+var browserSync      = require('browser-sync');
+var gulp             = require('gulp');
+var gulpBower        = require('gulp-bower');
+var gulpChanged      = require('gulp-changed');
+var gulpClean        = require('gulp-clean');
+var gulpConcat       = require('gulp-concat');
+var gulpConcatCss    = require('gulp-concat-css');
+// var gulpFilesize  = require('gulp-filesize');
+var gulpFlatten      = require('gulp-flatten');
+var gulpFooter       = require('gulp-footer');
+// var gulpIf        = require('gulp-if');
+var gulpHeader       = require('gulp-header');
+// var gulpIgnore    = require('gulp-ignore');
+var gulpImagemin     = require('gulp-imagemin');
+var gulpJshint       = require('gulp-jshint');
+var gulpJade         = require('gulp-jade');
+var gulpLess         = require('gulp-less');
+// var gulpMinifyCSS = require('gulp-minify-css');
+var gulpNotify       = require('gulp-notify');
+// var gulpRevAll    = require('gulp-rev-all');
+var gulpSourcemaps   = require('gulp-sourcemaps');
+// var gulpUglify    = require('gulp-uglify');
 
 
 // gulp util
@@ -236,6 +240,10 @@ var handleErrors = function() {
   this.emit('end');
 };
 
+gulp.task('bower', function () {
+  return gulpBower()
+    .pipe(gulp.dest(config.bower.dist));
+});
 gulp.task('browserSync', function() {
   browserSync(config.browserSync);
 });
