@@ -6,8 +6,10 @@ var bowerPath = './bower_components';
 var packageJson = 'package.json';
 var revallJson = 'manifest.json';
 var concatJson = 'concat.json';
+var jshintrcJson = '.jshintrc';
 var pkgInfo =  require('./'+packageJson);
 var concatInfo =  require('./'+concatJson);
+var jshintrcInfo =  require('./'+jshintrcJson);
 
 /**
  * @name getConfig
@@ -37,7 +39,7 @@ var getHashMap = function() {
 
 var getConfig = function(productionOrDevelop) {
   // config for all
-  productionOrDevelop = productionOrDevelop === true? true : false;
+  productionOrDevelop = productionOrDevelop === true ? true : false;
   // path config
   var dist = './_build';
   var releaseTemp = './_static';
@@ -118,25 +120,7 @@ var getConfig = function(productionOrDevelop) {
       }
     },
     jshint: {
-      opt: {
-        'bitwise': false,
-        'indent': 2,
-        'jquery': true,
-        'globals': {
-          'L': false,
-          'd3': false,
-          'd3pie': false,
-
-          'pluralidx': false,
-          'gettext': false,
-          'ngettext': false,
-          'gettext_noop': false,
-          'pgettext': false,
-          'npgettext': false,
-          'interpolate': false,
-          'get_format': false
-        }
-      }
+      opt: jshintrcInfo
     },
     less: {
       src: src + '/less/*.less',
@@ -163,7 +147,7 @@ var getConfig = function(productionOrDevelop) {
     revall: {
       textType: '{css,js,md}',
       name: revallJson,
-      src: [dist + '/**'], 
+      src: [dist + '/**'],
       dist: release + '/',
       distTemp: releaseTemp + '/',
       cleanSrc: [release, releaseTemp],
@@ -216,7 +200,7 @@ var handleErrors = function() {
   // Keep gulp from hanging on this task
   this.emit('end');
 };
-gulp.env.debug = true;
+
 gulp.task('browserSync', function() {
   browserSync(config.browserSync);
 });
@@ -336,10 +320,10 @@ gulp.task('revall', ['copy'], function() {
     .pipe(revall.manifest({ fileName: config.revall.name }))
     .pipe(gulp.dest(config.revall.dist));
 });
-gulp.task('watch', ['browserSync'], function(callback) {
+gulp.task('watch', ['browserSync'], function(cb) {
   gulp.watch(config.less.src,   ['less']);
   gulp.watch(config.concat.src,   ['concat']);
   gulp.watch(config.images.src, ['images']);
-  gulp.watch(config.jade.src, ['jade']);
+  // gulp.watch(config.jade.src, ['jade']);
   // gulp.watch(config.copy.src, ['copy']);
 });
