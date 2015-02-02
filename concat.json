@@ -1,0 +1,13 @@
+[{
+  "dist": "lib.js",
+  "src": [
+    "bower_components/jquery/dist/jquery.min.js",
+    "bower_components/bootstrap/dist/js/bootstrap.min.js"
+  ]
+},{
+  "dist": "index.js",
+  "src": [
+    "src/js//index.js",
+    "src/js/index_2.js"
+  ]
+}]
