@@ -381,6 +381,7 @@ gulp.task('less', function () {
 //     .pipe(gulp.dest(config.revAll.dist));
 // });
 gulp.task('watch', ['browserSync', 'images', 'copy', 'concat', 'concatCss', 'less', 'jade'], function(cb) {
+  console.log('Ensure that bower installed.');
   gulp.watch(config.less.src,   ['less']);
   gulp.watch(config.concat.src, ['concat']);
   gulp.watch(config.images.src, ['images']);
