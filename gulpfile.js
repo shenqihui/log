@@ -1,15 +1,20 @@
-var release = './static';
-var templates = './templates';
-var bowerPath = './bower_components';
+var release              = './static';
+var templates            = './templates';
+var bowerPath            = './bower_components';
 
 // global variable
-var packageJson = 'package.json';
-var revallJson = 'manifest.json';
-var concatJson = 'concat.json';
-var jshintrcJson = '.jshintrc';
-var pkgInfo =  require('./'+packageJson);
-var concatInfo =  require('./'+concatJson);
-var jshintrcInfo =  require('./'+jshintrcJson);
+var packageJson          = 'package.json';
+var revallJson           = 'manifest.json';
+var concatJson           = 'concat.json';
+var jshintrcJson         = 'jshintrc.json';
+var pkgInfo              =  require('./'+packageJson);
+var concatInfo           =  require('./'+concatJson);
+var jshintrcInfo         =  require('./'+jshintrcJson);
+var LessPluginCleanCSS   = require("less-plugin-clean-css");
+var cleancss             = new LessPluginCleanCSS({advanced: true});
+var LessPluginAutoPrefix = require('less-plugin-autoprefix');
+var autoprefix           = new LessPluginAutoPrefix({browsers: ["last 2 versions"]});
+
 
 /**
  * @name getConfig
@@ -43,7 +48,7 @@ var getConfig = function(productionOrDevelop) {
   // path config
   var dist = './_build';
   var releaseTemp = './_static';
-  // where is debug mod, build file into django path, if product mode, build into temp path, and copy + revall into django path.
+  // where is debug mod, build file into django path, if product mode, build into temp path, and copy + revAll into django path.
   if(productionOrDevelop === false) {
     dist = release;
     releaseTemp = release;
@@ -83,7 +88,18 @@ var getConfig = function(productionOrDevelop) {
     directory: {
       path: bowerPath
     },
-    hashMap: getHashMap(),
+    flatten: {
+      src: [{
+        dist: dist+'/js',
+        src: bowerPath+'/**/**.min.map'
+      }, {
+        dist: dist+'/css',
+        src: bowerPath+'/**/**.css.map'
+      }, {
+        dist: dist+'/fonts',
+        src: bowerPath+'/**/fonts/**'
+      }]
+    },
     images: {
       src: [src + '/images/**', src + '/ico/**'],
       dist: dist + '/images'
@@ -128,7 +144,8 @@ var getConfig = function(productionOrDevelop) {
       settings: {
         sourceComments: 'map',
         // Used by the image-url helper
-        imagePath: '/images'
+        imagePath: '/images',
+        plugins: [autoprefix, cleancss]
       }
     },
     production: {
@@ -140,11 +157,11 @@ var getConfig = function(productionOrDevelop) {
       // production task define here
       task: ['less:p', 'concat:p', 'images:p', 'copy:p'],
       taskLast: [
-        'revall', 'jade'
+        'revAll', 'jade'
       ],
       productionFlag: productionOrDevelop
     },
-    revall: {
+    revAll: {
       textType: '{css,js,md}',
       name: revallJson,
       src: [dist + '/**'],
@@ -164,36 +181,46 @@ var getConfig = function(productionOrDevelop) {
     }
   };
 };
+
+
+///////////////////////////////////
+// Stuff you may not want to edit
+///////////////////////////////////
+
+
 // default config as develop, you can reload this by running config = getConfig(true)
 var config = getConfig(false);
 
 // gulp plugin
-var browserSync = require('browser-sync');
-var changed    = require('gulp-changed');
-var clean        = require('gulp-clean');
-var concat       = require('gulp-concat');
-var config     = getConfig();
-var footer = require('gulp-footer');
-var gulp        = require('gulp');
-// var gulpif       = require('gulp-if');
-var gulpIgnore = require('gulp-ignore');
-var gulpJshint = require('gulp-jshint');
-var header = require('gulp-header');
-var imagemin   = require('gulp-imagemin');
-var jade         = require('gulp-jade');
-var less         = require('gulp-less');
-var minifyCSS = require('gulp-minify-css');
-var notify = require('gulp-notify');
-var revall       = require('gulp-rev-all');
-var size      = require('gulp-filesize');
-var sourcemaps   = require('gulp-sourcemaps');
-var uglify       = require('gulp-uglify');
+var browserSync        = require('browser-sync');
+var gulp               = require('gulp');
+var gulpChanged        = require('gulp-changed');
+var gulpClean          = require('gulp-clean');
+var gulpConcat         = require('gulp-concat');
+var gulpFilesize       = require('gulp-filesize');
+var gulpFlatten        = require('gulp-flatten');
+var gulpFooter         = require('gulp-footer');
+var gulpIf             = require('gulp-if');
+var gulpHeader         = require('gulp-header');
+var gulpIgnore         = require('gulp-ignore');
+var gulpImagemin       = require('gulp-imagemin');
+var gulpJshint         = require('gulp-jshint');
+var gulpJade           = require('gulp-jade');
+var gulpLess           = require('gulp-less');
+var gulpMinifyCSS      = require('gulp-minify-css');
+var gulpNotify         = require('gulp-notify');
+var gulpRevAll         = require('gulp-rev-all');
+var gulpSourcemaps     = require('gulp-sourcemaps');
+var gulpUglify         = require('gulp-uglify');
+
+
+
 
 // gulp util
 var handleErrors = function() {
   var args = Array.prototype.slice.call(arguments);
   // Send error to notification center with gulp-notify
-  notify.onError({
+  gulpNotify.onError({
     title: 'Compile Error',
     message: '<%= error %>'
   }).apply(this, args);
@@ -206,22 +233,22 @@ gulp.task('browserSync', function() {
 });
 gulp.task('clean', function () {
   return gulp.src(config.clean.src, {read: false})
-    .pipe(clean());
+    .pipe(gulpClean());
 });
 gulp.task('clean:p', function () {
   return gulp.src(config.clean.productSsrc, {read: false})
-    .pipe(clean());
+    .pipe(gulpClean());
 });
 gulp.task('concat', function() {
   return config.concat.js.forEach(function(elem, i) {
     gulp.src(elem.src)
       .pipe(gulpJshint(config.jshint.opt))
-      .pipe(sourcemaps.init())
-      .pipe(concat(elem.dist))
-      .pipe(header('(function () {\n//with concat\n\n'))
-      .pipe(footer('\n\n//with concat end\n})();'))
+      .pipe(gulpSourcemaps.init())
+      .pipe(gulpConcat(elem.dist))
+      .pipe(gulpHeader('(function () {\n//with concat\n\n'))
+      .pipe(gulpFooter('\n\n//with concat end\n})();'))
       .on('error', handleErrors)
-      .pipe(sourcemaps.write())
+      .pipe(gulpSourcemaps.write('./'))
       .pipe(gulp.dest(config.concat.dist))
       .pipe(browserSync.reload({stream:true}));
   });
@@ -230,14 +257,14 @@ gulp.task('concat:p', function() {
   return config.concat.js.forEach(function(elem, i) {
     gulp.src(elem.src)
       .pipe(gulpJshint(config.jshint.opt))
-      .pipe(concat(elem.dist))
-      .pipe(header('(function () {\n//with concat\n\n'))
-      .pipe(footer('\n\n//with concat end\n})();'))
+      .pipe(gulpConcat(elem.dist))
+      .pipe(gulpHeader('(function () {\n//with concat\n\n'))
+      .pipe(gulpFooter('\n\n//with concat end\n})();'))
       .on('error', handleErrors)
-      .pipe(uglify())
+      .pipe(gulpUglify())
       .on('error', handleErrors)
       .pipe(gulp.dest(config.concat.dist))
-      .pipe(size());
+      .pipe(gulpFilesize());
   });
 });
 gulp.task('copy', function() {
@@ -251,59 +278,67 @@ gulp.task('copy:p', function() {
     .pipe(gulp.dest(config.copy.dist));
 });
 gulp.task('default', config.default.task);
+gulp.task('defaultConfig', function() {
+
+});
+gulp.task('flatten', function() {
+  config.flatten.src.forEach(function(elem) {
+    (function(elem) {
+      gulp.src(elem.src)
+        .pipe(gulpFlatten())
+        .pipe(gulp.dest(elem.dist));
+    })(elem);
+  });
+});
 gulp.task('images', function() {
   return gulp.src(config.images.src)
     // Ignore unchanged files
-    .pipe(changed(config.images.dist))
+    .pipe(gulpChanged(config.images.dist))
     // Optimize
-    .pipe(imagemin())
+    .pipe(gulpImagemin())
     .pipe(gulp.dest(config.images.dist))
     .pipe(browserSync.reload({stream:true}));
 });
 gulp.task('images:p', function() {
   return gulp.src(config.images.src)
     // Ignore unchanged files
-    .pipe(changed(config.images.dist))
+    .pipe(gulpChanged(config.images.dist))
     // Optimize
-    .pipe(imagemin())
+    .pipe(gulpImagemin())
     .pipe(gulp.dest(config.images.dist))
     .pipe(browserSync.reload({stream:true}));
 });
 gulp.task('jade', function () {
   return gulp.src(config.jade.src)
-    .pipe(sourcemaps.init())
-    .pipe(jade(config.jade.settings))
+    .pipe(gulpJade(config.jade.settings))
     .on('error', handleErrors)
-    .pipe(sourcemaps.write())
     .pipe(gulp.dest(config.jade.dist))
     .pipe(browserSync.reload({stream:true}));
 });
 gulp.task('jade:p', function () {
   return gulp.src(config.jade.src)
-    .pipe(sourcemaps.init())
-    .pipe(jade(config.jade.ProductSettings))
+    .pipe(gulpJade(config.jade.ProductSettings))
     .on('error', handleErrors)
-    .pipe(sourcemaps.write())
     .pipe(gulp.dest(config.jade.dist))
     .pipe(browserSync.reload({stream:true}));
 });
 gulp.task('less', function () {
   return gulp.src(config.less.src)
-    .pipe(sourcemaps.init())
-    .pipe(less(config.less.settings))
+    .pipe(gulpSourcemaps.init())
+    .pipe(gulpLess(config.less.settings))
     .on('error', handleErrors)
-    .pipe(sourcemaps.write())
+    .pipe(gulpSourcemaps.write('./'))
     .pipe(gulp.dest(config.less.dist))
     .pipe(browserSync.reload({stream:true}));
 });
 gulp.task('less:p', function () {
   return gulp.src(config.less.src)
-    .pipe(less(config.less.settings))
+    .pipe(gulpLess(config.less.settings))
     .on('error', handleErrors)
-    .pipe(minifyCSS({keepBreaks:false}))
+    .pipe(gulpMinifyCSS({keepBreaks:false}))
     .on('error', handleErrors)
     .pipe(gulp.dest(config.production.cssPath))
-    .pipe(size());
+    .pipe(gulpFilesize());
 });
 
 gulp.task('production', function() {
@@ -311,18 +346,18 @@ gulp.task('production', function() {
   gulp.start(config.production.task);
 });
 
-gulp.task('revall', ['copy'], function() {
-  return gulp.src(config.revall.src)
+gulp.task('revAll', function() {
+  return gulp.src(config.revAll.src)
     .pipe(gulpIgnore.exclude(bowerPath+'/**'))
-    .pipe(gulp.dest(config.revall.distTemp))
-    .pipe(revall({ignore: config.revall.ignore}))
-    .pipe(gulp.dest(config.revall.dist))
-    .pipe(revall.manifest({ fileName: config.revall.name }))
-    .pipe(gulp.dest(config.revall.dist));
+    .pipe(gulp.dest(config.revAll.distTemp))
+    .pipe(gulpRevAll({ignore: config.revAll.ignore}))
+    .pipe(gulp.dest(config.revAll.dist))
+    .pipe(gulpRevAll.manifest({ fileName: config.revAll.name }))
+    .pipe(gulp.dest(config.revAll.dist));
 });
-gulp.task('watch', ['browserSync'], function(cb) {
+gulp.task('watch', function(cb) {
   gulp.watch(config.less.src,   ['less']);
-  gulp.watch(config.concat.src,   ['concat']);
+  gulp.watch(config.concat.src, ['concat']);
   gulp.watch(config.images.src, ['images']);
   // gulp.watch(config.jade.src, ['jade']);
   // gulp.watch(config.copy.src, ['copy']);

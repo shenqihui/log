@@ -19,7 +19,6 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.2",
     "font-awesome": "~4.2.0",
     "components-bootstrap": "~3.3.2",
     "artTemplate": "aui/artTemplate#~3.0.1"

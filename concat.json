@@ -2,7 +2,7 @@
   "dist": "lib.js",
   "src": [
     "bower_components/jquery/dist/jquery.min.js",
-    "bower_components/bootstrap/dist/js/bootstrap.min.js"
+    "bower_components/components-bootstrap/js/bootstrap.min.js"
   ]
 },{
   "dist": "index.js",
