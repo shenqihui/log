@@ -1,0 +1,6 @@
+[{
+  "dist": "concat_css_example.css",
+  "src": [
+    "bower_components/components-bootstrap/css/bootstrap.css"
+  ]
+}]
