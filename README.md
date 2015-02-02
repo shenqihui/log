@@ -108,3 +108,12 @@ Todo list
 
 
 
+Change Log
+===
+|version|desc|
+|-------|----|
+|v0.2.0 |django+gulp+develop mode done|
+
+------
+
+
