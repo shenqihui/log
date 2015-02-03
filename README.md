@@ -32,6 +32,7 @@ python manage.py migrate
 ### run with develop mode  
 ```shell
 npm install
+gulp bower
 gulp
 ```
 
