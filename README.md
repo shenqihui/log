@@ -6,36 +6,42 @@ This is a project demo build with django and gulp.
 
 How to run this
 ===
-0. install base package
+
+### install base package
   1. [node](http://nodejs.org/)  
   2. [npm](https://www.npmjs.com/)  
   3. [bower](http://bower.io/)  
   4. python
   5. [django](https://www.djangoproject.com/)  
-1. clone this repo
-```
+
+### clone this repo
+```shell
 git clone git@github.com:shenqihui/log.git
 cd log
 git checkout master
 ```
-2. migration and start django project
-```
+
+### migration and start django project
+```shell
 python manage.py syncdb
 python manage.py makemigrations
 python manage.py migrate
 ./start.py
 ```
-3. run with develop mode  
-```
+
+### run with develop mode  
+```shell
 npm install
 gulp
 ```
-4. open browser
-```
-http://your ip address:8888/
+
+### open browser
+```shell
+http://your_ip_address:8888/
 ``` 
-5. once you are finish developing, build production 
-```
+
+### once you are finish developing, build production 
+```shell
 gulp production
 ```
 
@@ -84,6 +90,7 @@ Sixth, never add/commit dist or temp or bower file by using `.gitignore`.
 
 File architecture
 ===
+```
 ├── log                   // project path
 │   ├── __init__.py
 │   ├── settings              // project settings floder
@@ -122,7 +129,7 @@ File architecture
 ├── migrations.py  
 ├── package.json          // config the package to dev or depand
 └── start.py              // entrance to start this project
-
+```
 
 ------
 
@@ -212,7 +219,7 @@ Change Log
 ===
 |version|desc|
 |-------|----|
-|v0.3.0 |django+gulp+product mode done|
+|v0.3.0 |django+gulp+production mode done|
 |v0.2.0 |django+gulp+develop mode done|
 
 ------
