@@ -12,8 +12,6 @@ bower/
 
 node_modules/
 
-*.map
-*.css
 
 requirements-dev.pip
 requirements.pip
@@ -26,6 +24,7 @@ bin/
 buildout.cfg
 db.sqlite3
 fig.yml
+
 
 requirements.pip
 requirements-dev.pip
