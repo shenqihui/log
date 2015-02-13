@@ -7,4 +7,5 @@ urlpatterns = patterns(
     'apps.home.views',
 
     url(r'^$', 'index', name='index'),
+    url(r'^data$', 'datadue', name='datadue'),
 )
